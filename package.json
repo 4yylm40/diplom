@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run dev",
-    "client": "node index.js",
-    "server": "nodemon index.js",
     "client": "npm run serve --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "server": "nodemon index.js",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "author": "Mikhail Kirillov",
   "license": "ISC",
@@ -25,7 +25,7 @@
     "request": "^2.88.0"
   },
   "devDependencies": {
-    "concurrently": "^5.1.0",
+    "concurrently": "^5.2.0",
     "nodemon": "^2.0.2"
   }
 }
