@@ -33,6 +33,11 @@ export default new Router({
             name: 'lesson',
             path: '/theory/:lesson_id',
             component: () => import('./components/LessonDetail')
+        },
+        {
+            name: 'practic',
+            path: '/practic/:practic_id',
+            component: () => import('./components/PracticDetail')
         }
     ]
 });

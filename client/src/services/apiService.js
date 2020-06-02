@@ -55,8 +55,53 @@ const getLessons = () => {
     return axios.get('/api/lesson');
 }
 
+//Get one lesson
 const getOneLesson = (id) => {
     return axios.get('/api/lesson/' + id);
+}
+
+//Add new lesson
+const addNewLesson = (title, video, theory, question) => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    const body = JSON.stringify({title, video, theory, question});
+
+    try {
+        return axios.post('api/lesson', body, config);
+    } catch (error) {
+        return error.response.data.errors;
+    }
+}
+
+//Add new practic
+const addNewPractic = (title, question) => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    const body = JSON.stringify({title, question});
+
+    try {
+        return axios.post('api/practic', body, config);
+    } catch (error) {
+        return error.response.data.errors;
+    }
+}
+
+//Get all practics
+const getAllPractics = () => {
+    return axios.get('/api/practic');
+}
+
+//Get one practic
+const getOnePractic = (id) => {
+    return axios.get('/api/practic/' + id);
 }
 
 export {
@@ -67,5 +112,10 @@ export {
     getProfiles,
 
     getLessons,
-    getOneLesson
+    getOneLesson,
+    addNewLesson,
+
+    addNewPractic,
+    getAllPractics,
+    getOnePractic
 };

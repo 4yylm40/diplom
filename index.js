@@ -14,7 +14,8 @@ app.use(cors());
 
 app.use("/api/users", require("./routes/api/users"));
 app.use("/api/auth", require("./routes/api/auth"));
-app.use("/api/profile", require("./routes/api/profile"));
 app.use("/api/lesson", require("./routes/api/lesson"));
+app.use("/api/practic", require("./routes/api/practic"));
+app.use("/api/profile", require("./routes/api/profile"));
 
 app.listen(3000);

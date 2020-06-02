@@ -1,36 +1,35 @@
-// var form = document.querySelector("form");
-// var log = document.querySelector("#log");
-
-// form.addEventListener("submit", function(event) {
-//   var data = new FormData(form);
-//   var output = "";
-//   for (const entry of data) {
-//     output = entry[0] + "=" + entry[1] + "\r";
-//   };
-//   log.innerText = output;
-//   event.preventDefault();
-// }, false);
-
-function summary() {
-  let count = document.getElementsByClassName('question').length; //Количество вопросов
-  let answers = document.querySelectorAll('.question'); //Все элементы div с вопросами (???)
-  let score = 0; //Количество верных ответов
-  let rightAnswers = ["a_1"] //Список верных ответов
-
-  for (let i = 0; i < count; i++) {
-    let chosenAnswer = answers[i].querySelector("input[type='radio']:checked"); //Из массива вопросов выбираем элемент радио, который выбрал пользователь
-    if (chosenAnswer && chosenAnswer.id == rightAnswers[i]) //Думал что будет работать если будет свреять по html разметке, но зря
+$('.slider').slick({
+  dots: true,
+  infinite: true,
+  speed: 400,
+  slidesToShow: 2,
+  slidesToScroll: 3,
+  autoplay: true,
+  autoplaySpeed: 3000,
+  arrows:false,
+  responsive: [
     {
-      score++;
-      alert("правильный ответ");
-      alert(score);
+      breakpoint: 991,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 2,
+        infinite: true,
+        dots: true
+      }
+    },
+    {
+      breakpoint: 760,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        variableWidth: true,
+        centerMode: true,
+        centerPadding: '40px'
+
+      }
     }
-    else{
-      alert("неправильный ответ");
-    }
-    // console.log("Выбранный ответ: " + chosenAnswer && chosenAnswer.parentNode.textContent);
-    // console.log("Правильный ответ: " + rightAnswers[i]);
-    // console.log("Очки: " + score);
-    
-  }
-}
+    // You can unslick at a given breakpoint now by adding:
+    // settings: "unslick"
+    // instead of a settings object
+  ]
+});

@@ -13,28 +13,36 @@ const LessonSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    questions: [
-        {
-            number: {
-                type: Number,
-                required: true
-            },
-            question: {
-                type: String,
-                required: true
-            },
-            answers: [
-                {
-                    answer: {
-                        type: String,
-                        required: true
-                    },
-                    right: {
-                        type: Boolean,
-                        default: false
-                    }
+    question: {
+        text: {
+            type: String,
+        },
+        answers: [
+            {
+                title: {
+                    type: String,
+                },
+                right: {
+                    type: Boolean,
+                    default: false
                 }
-            ]
+            }
+        ]
+    },
+    testing: [
+        {
+            user: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'user'
+            },
+            try: {
+                type: Number,
+                default: 1
+            },
+            score: {
+                type: Number,
+                default: 0
+            }
         }
     ],
     comments: [
