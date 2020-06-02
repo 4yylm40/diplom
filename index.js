@@ -2,6 +2,8 @@ const express = require("express");
 const connectDb = require("./config/db");
 const cors = require("cors");
 
+const path = require('path');
+
 const PORT = process.env.PORT || 3000;
 const app = express();
 
@@ -17,5 +19,13 @@ app.use("/api/auth", require("./routes/api/auth"));
 app.use("/api/lesson", require("./routes/api/lesson"));
 app.use("/api/practic", require("./routes/api/practic"));
 app.use("/api/profile", require("./routes/api/profile"));
+
+if(process.env.NODE_ENV === 'production') {
+    app.use(express.static('client/build'));
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+    });
+}
 
 app.listen(3000);
