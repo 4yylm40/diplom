@@ -8,6 +8,9 @@
     "server": "nodemon index.js",
     "client": "npm run serve --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "author": "Mikhail Kirillov",
