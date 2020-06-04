@@ -34,6 +34,37 @@ router.post("/", [
     }
 });
 
+//@route    POST api/practic/:id
+//@desc     Upload file on server
+//@access   Public
+
+router.post("/:id", async (req, res) => {
+
+})
+
+//@route    PUT api/practic/:id
+//@desc     Update information about sending file
+//@access   Public
+
+router.put("/:id", auth, async (req, res) => {
+    try {
+        const practic = await Practic.findById(req.params.id);
+
+        /*if(practic.answers.filter((answer) => answer.user.toString() === req.user.id).lenght() > 0) {
+            return res.status(400).json({msg: 'Вы уже отправляли решение этого задания'});
+        }*/
+
+        practic.answers.unshift({user: req.user.id, file: req.body.file});
+        await practic.save();
+
+        res.json(practic.answers)
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send("Server error");
+    }
+})
+
 //@route    GET api/practic
 //@desc     Get all practics
 //@access   Public

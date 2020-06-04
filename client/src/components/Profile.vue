@@ -1,5 +1,8 @@
 <template>
     <div class="container">
+    {{user.name}}
+    {{user.email}}
+    {{user.score}}
         <h2>Теория</h2>
             <form @submit.prevent="addLesson">
                 <div class="form-group">
@@ -27,7 +30,7 @@
                     <button @click.prevent="addQuestion" class="btn btn-primary">Добавить ответ</button>
                 </div>
                 <ul>
-                    <li v-for="answer of answers" :key="answer.key">{{answer.answer_tilte}}</li>
+                    <li v-for="answer of answers" :key="answer.key">{{answer.title}}</li>
                 </ul>
                 <button type="submit" class="btn btn-primary">Добавить урок</button>
             </form>
@@ -43,12 +46,11 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from 'vuex'
-import {addNewLesson, addNewPractic} from '../services/apiService'
+import {mapGetters} from 'vuex'
+import {addNewLesson, addNewPractic, getAuthUser} from '../services/apiService'
 
 export default {
     name: 'Profile',
-    props: ['ds'],
     data() {
         return {
             user: {},
@@ -69,37 +71,40 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['getToken', 'getErrors'])
+        ...mapGetters(['getErrors'])
     },
     mounted() {
-
+        this.getUser();
     },
     methods: {
-        ...mapActions(['authUser']),
-        async getUser() {
-            return await this.authUser({
-                token:this.getToken
-            })
+        getUser() {
+           getAuthUser().then((user) => {
+               this.user = user.data
+           }).catch((error) => {
+               console.log(error.response.data.errors)
+           });
         },
 
         addLesson() {
             const question = {
-                question: this.question_title,
+                text: this.question_title,
                 answers: this.answers
             }
+            console.log(this.question_title);
+            console.log(this.answers);
             addNewLesson(this.title, this.video, this.theory, question).then((lesson) => {
                 console.log(lesson.data);
             }).catch((error) => {
-                console.log(error);
+                console.log(error.response.data.errors);
             })
         },
         addQuestion() {
             const answer = {
-                answer_tilte: this.answer_title,
-                answer_right: this.answer_right
+                title: this.answer_title,
+                right: this.answer_right
             }
             this.answers.push(answer);
-            console.log(answer);
+            //console.log(this.answers);
         },
         addPractic() {
             addNewPractic(this.practicTitle, this.practicQuestion).then((practic) => {

@@ -13,7 +13,7 @@
 
                     <li v-if="getToken" class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            
+                            {{userName}}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <form id="profile" action="profile.php" method="post">
@@ -54,13 +54,15 @@
 
 <script>
 import {mapGetters, mapActions} from 'vuex'
+import {getAuthUser} from '../services/apiService'
 export default {
     name: 'Header',
     computed: mapGetters(['getToken', 'getErrors']),
     data() {
         return {
             email: '',
-            password: ''
+            password: '',
+            userName: ''
         }
     },
     methods: {
@@ -69,7 +71,16 @@ export default {
             this.loginUser({
                 email: this.email,
                 password: this.password
-            })
+            }),
+            this.getUser()
+        },
+
+        getUser() {
+            getAuthUser().then((user) => {
+                this.userName = user.data.name
+            }).catch((error) => {
+                console.log(error.response.data.errors)
+            });
         }
     }
 }

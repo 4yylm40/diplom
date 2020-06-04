@@ -1,3 +1,5 @@
+import store from '../store';
+import setAuthToken from './setAuthToken';
 import axios from "axios";
 axios.defaults.baseURL = 'http://localhost:3000';
 
@@ -36,13 +38,16 @@ const loginUser = (email, password) => {
 };
 
 //Get auth user
-const  getAuthUser = async (token) => {
-    const config = {
-        headers: {
-            'x-auth-token': token
-        }
-    };
-    return await axios.get('api/auth', {}, config);
+const  getAuthUser = () => {
+    if (store.getters.getToken) {
+        setAuthToken(store.getters.getToken)
+    }
+
+    try{
+        return axios.get('api/auth');
+    } catch(error) {
+        return error.response.data.errors;
+    }
 };
 
 //Get all profiles
@@ -56,8 +61,8 @@ const getLessons = () => {
 }
 
 //Get one lesson
-const getOneLesson = (id) => {
-    return axios.get('/api/lesson/' + id);
+const getOneLesson = () => {
+    return axios.get('/api/lesson/' + store.getters.getCurrentPost);
 }
 
 //Add new lesson
@@ -100,9 +105,34 @@ const getAllPractics = () => {
 }
 
 //Get one practic
-const getOnePractic = (id) => {
-    return axios.get('/api/practic/' + id);
+const getOnePractic = () => {
+    return axios.get('/api/practic/' + store.getters.getCurrentPost);
 }
+
+//Upload document
+const uploadDocument = () => {
+    return axios.post('/api/practic/' + store.getters.getCurrentPost);
+}
+
+//Upload user's file upload information
+const uploadDocumentInformation = (file) => {
+    if (store.getters.getToken) {
+        setAuthToken(store.getters.getToken)
+    }
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    const body = JSON.stringify({file});
+
+    try {
+        return axios.put('api/practic/' + store.getters.getCurrentPost, body, config);
+    } catch (error) {
+        return error.response.data.errors;
+    }
+} 
 
 export {
     registerUser,
@@ -117,5 +147,7 @@ export {
 
     addNewPractic,
     getAllPractics,
-    getOnePractic
+    getOnePractic,
+    uploadDocument,
+    uploadDocumentInformation
 };

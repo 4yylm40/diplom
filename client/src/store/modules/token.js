@@ -1,4 +1,4 @@
-import {registerUser, loginUser, getAuthUser} from '../../services/apiService'
+import {registerUser, loginUser} from '../../services/apiService'
 //import router from '../../router'
 
 export default {
@@ -19,12 +19,8 @@ export default {
                 ctx.commit('getErrors', error);
             });
         },
-        authUser(ctx, {token}) {
-            getAuthUser(token).then((user) => {
-                ctx.commit('getUser', user)
-            }).catch((error) => {
-                ctx.commit('getErrors', error)
-            });
+        getCurrentPost(ctx, {slug}) {
+            ctx.commit('getCurrentPost', slug);
         }
     },
     mutations: {
@@ -35,14 +31,15 @@ export default {
         {
             state.error = error;
         },
-        getUser(state, user) {
-            state.user = user;
+        getCurrentPost(state, slug) {
+            state.currentPost = slug;
         }
     },
     state: {
         token: '',
         error: '',
-        user: {}
+        user: {},
+        currentPost: ''
     },
     getters: {
         getToken(state) {
@@ -51,8 +48,8 @@ export default {
         getErrors(state) {
             return state.error;
         },
-        getUser(state) {
-            return state.user;
+        getCurrentPost(state) {
+            return state.currentPost;
         }
     }
 }

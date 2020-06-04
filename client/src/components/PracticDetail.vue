@@ -1,23 +1,65 @@
 <template>
     <div>
-        <h1>Задание 1</h1>
+        <h1>{{practic.title}}</h1>
         <div class="container">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita
-                modi
-                molestias atque consequatur reiciendis a numquam corporis libero beatae rerum id sed
-                earum
-                provident debitis itaque doloremque, accusantium, nesciunt fugit?
+                {{practic.question}}
                 <h2>Прикрепить задание</h2>
-                <form enctype="multipart/form-data" method="post">
-                    <p><input type="file" name="f">
+                <form v-if="getToken" enctype="multipart/form-data" @submit.prevent="sendAnswer">
+                    <p><input @change="onSelectFile" type="file" ref='file'>
                     <button type="submit">Отправить</button></p>
                 </form> 
+                <div v-else>Авторизуйтесь для отправки задания!</div>
         </div>
     </div>
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
+import {getOnePractic, uploadDocumentInformation} from '../services/apiService'
+
+import axios from "axios";
+axios.defaults.baseURL = 'http://localhost:3000';
+
 export default {
-    name: 'PracticDetail'
+    name: 'PracticDetail',
+    data() {
+        return {
+            practic: {},
+            file: ''
+        }
+    },
+    computed: {
+        ...mapGetters(['getToken', 'getCurrentPage'])
+    },
+    mounted() {
+        getOnePractic().then((practic) => {
+            this.practic = practic.data
+        }).catch((error) => {
+            console.log(error.response.data.errors);
+        });
+    },
+    methods: {
+        onSelectFile() {
+            const file = this.$refs.file.files[0];
+            this.file = file;
+        },
+
+        async sendAnswer() {
+            const formData = new FormData();
+            formData.append('file', this.file);
+            console.log(Date.now() + '-' + this.file.name)
+            try {
+                axios.post('/api/practic/' + this.getCurrentPost, formData)
+                uploadDocumentInformation(Date.now() + '-' + this.file.name).then((answer) => {
+                    console.log(answer)
+                }).catch((err) => {
+                    console.log(err)
+                });
+                console.log('success');
+            } catch(error) {
+                console.log(error)
+            }
+        }
+    }
 }
 </script>

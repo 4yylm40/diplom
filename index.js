@@ -1,11 +1,21 @@
 const express = require("express");
 const connectDb = require("./config/db");
 const cors = require("cors");
+const multer = require('multer');
 
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
+
+const storageConfig = multer.diskStorage({
+    destination: (req, file, cb) =>{
+        cb(null, "uploads");
+    },
+    filename: (req, file, cb) =>{
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
 
 //Connect DataBase
 connectDb();
@@ -13,6 +23,9 @@ connectDb();
 //Init Middleware
 app.use(express.json({extended: false}));
 app.use(cors());
+
+app.use(express.static(__dirname));
+app.use(multer({storage:storageConfig}).single("file"));
 
 app.use("/api/users", require("./routes/api/users"));
 app.use("/api/auth", require("./routes/api/auth"));

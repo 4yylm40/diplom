@@ -24,7 +24,7 @@
             <h2>Практические задания</h2>
             <div class="row">
                 <div class="col-xl-6">
-                    <div class="project project__mobiile" v-for="practic of practics" :key="practic.key">
+                    <div class="project project__mobiile" v-for="practic of practics" :key="practic.key" v-on:click="getSlug(practic._id)">
                         <router-link class="project__href" :to="{name: 'practic', params: {practic_id: practic._id}}">
                             <div class="project__form">
                                 <h1 class="project__header">{{practic.title}}</h1>
@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 import { getProfiles, getAllPractics } from "../services/apiService";
 export default {
     name: 'Practic',
@@ -61,7 +62,15 @@ export default {
             this.practics = practics.data
         }).catch((error) => {
             console.log(error);
-        });
+        })
+    },
+    methods: {
+        ...mapActions(['getCurrentPost']),
+        getSlug(slug) {
+            this.getCurrentPost({
+                slug: slug
+            })
+        }
     }
 }
 </script>
