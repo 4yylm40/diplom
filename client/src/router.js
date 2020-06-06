@@ -38,6 +38,16 @@ export default new Router({
             name: 'practic',
             path: '/practic/:practic_id',
             component: () => import('./components/PracticDetail')
+        },
+        {
+            name: 'demo',
+            path: '/demo',
+            component: () => import('./components/Demo')
+        },
+        {
+            name: 'demo',
+            path: '/demo/:demo_id',
+            component: () => import('./components/DemoDetail')
         }
     ]
 });

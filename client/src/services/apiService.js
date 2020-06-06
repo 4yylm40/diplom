@@ -82,6 +82,26 @@ const addNewLesson = (title, video, theory, question) => {
     }
 }
 
+//Add information about user's testing
+const answerTest = (trying, score) => {
+    if (store.getters.getToken) {
+        setAuthToken(store.getters.getToken);
+    }
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    const body = JSON.stringify({trying, score});
+
+    try {
+        return axios.put('api/lesson/' + store.getters.getCurrentPost, body, config);
+    } catch (error) {
+        return error.response.data.errors;
+    }
+}
+
 //Add new practic
 const addNewPractic = (title, question) => {
     const config = {
@@ -144,6 +164,7 @@ export {
     getLessons,
     getOneLesson,
     addNewLesson,
+    answerTest,
 
     addNewPractic,
     getAllPractics,

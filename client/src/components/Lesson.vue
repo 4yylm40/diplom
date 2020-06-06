@@ -3,8 +3,8 @@
         <router-link class="project__href" :to="{name: 'lesson', params: {lesson_id: lesson._id}}">
         <div class="project__form">
             <h1 class="project__header">{{lesson.title}}</h1>
-            <video controls :src="lesson.video" class="col-lg-12" type="video/mp4"></video>
-            <p class="project__text">{{lesson.theory}}</p>
+            <iframe class="col-lg-12" width="433" height="200" :src="lesson.video" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <p class="project__text">{{lesson.theory.slice(0, 200) + ' ...'}}</p>
             </div>
         </router-link>
     </div>

@@ -2,12 +2,12 @@
     <div>
             <div class="container">
         <h1>{{lesson.title}}</h1>
-        <video controls :src="lesson.video" class="col-lg-12" type="video/mp4"></video>
+        <iframe class="col-lg-12" width="560" height="560" :src="lesson.video" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
         <div class="flex-box">
             <a class="btn btn-dark" data-toggle="collapse" href="#multiCollapseExample1" role="button"
                 aria-expanded="false" aria-controls="multiCollapseExample1">Показать теорию</a>
-            <input  class="btn btn-dark" value="Следующий урок" type="button" onclick="location.href='2.php'" />
+            <!--<input  class="btn btn-dark" value="Следующий урок" type="button" onclick="location.href='2.php'" />-->
         </div>
 
     </div>
@@ -34,16 +34,17 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form @submit.prevent="answerTest">
+                                        <form @submit.prevent="answerTest(lesson.question.answers)">
                                             <p class="text-center"><b>{{lesson.question.text}}</b></p>
                                             <div class="question">
                                                 <hr>
                                                 <ol>
-                                                    <li v-for="answer of lesson.question.answers" :key="answer.id"><input type="checkbox" name="quest1"> <label
+                                                    <li v-for="answer of lesson.question.answers" :key="answer.id"><input @change="chooseAnswer(answer)" type="checkbox" name="quest1"> <label
                                                             class="form-check-label" for="a_1">{{answer.title}}</label></li>
                                                 </ol>
                                             </div>
                                             <div>
+                                                {{msg}}
                                                 <button class="btn-dark btn-lg btn-block" id="apply">Получить
                                                     результат</button>
                                             </div>
@@ -58,18 +59,41 @@
             </div>
         </div>
     </div>
+
+    <div v-if="admin">
+        <h2>Прошедшие тест</h2>
+        <table class="table table-sm table-dark table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Имя</th>
+                <ht scope="col">Количество попыток</ht>
+                <th scope="col">Счет</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="user of lesson.testing" :key="user._id">
+                <td>{{user.user.name}}</td>
+                <td>{{user.trying}}</td>
+                <td>{{user.score}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
     </div>
 </template>
 
 <script>
-import {getOneLesson} from '../services/apiService'
+import {getAuthUser, getOneLesson, answerTest} from '../services/apiService'
 import {mapGetters} from 'vuex'
 
 export default {
     name: 'LessonDetail',
     data() {
         return {
-            lesson: {}
+            lesson: {},
+            msg: '',
+            admin: false
         }
     },
     computed: {
@@ -80,11 +104,58 @@ export default {
             this.lesson = lesson.data
         }).catch((error) => {
             console.log(error.response.data.errors)
-        });
+        }),
+
+        this.getUser();
     },
     methods: {
-        answerTest() {
-            
+        answerTest(answers) {
+            let mistakes = 0;
+            answers.map((answer) => {
+                if(answer.right != answer.user_answer) {
+                    mistakes++;
+                }
+            });
+            if(mistakes == 0) {
+                //GET user's try
+                //Calculate score
+                //PUT information to lesson +try +score
+                answerTest(1, 1).then(() => {
+                    getOneLesson().then((lesson) => {
+                        this.lesson = lesson.data
+                    }).catch((error) => {
+                        console.log(error.response.data.errors)
+                    });
+                    this.msg = 'Ответ верный'
+                }).catch((err) => {
+                    console.log(err);
+                });
+            } else {
+                answerTest(1, 0).then(() => {
+                    getOneLesson().then((lesson) => {
+                        this.lesson = lesson.data
+                    }).catch((error) => {
+                        console.log(error.response.data.errors)
+                    });
+                    this.msg = 'Ответ неверный'
+                }).catch((err) => {
+                    console.log(err)
+                });
+            }
+        },
+
+        chooseAnswer(answer) {
+            answer.user_answer = !answer.user_answer;
+        },
+
+        getUser() {
+           getAuthUser().then((user) => {
+               if(user.data.role == "admin") {
+                   this.admin = true
+               }
+           }).catch((error) => {
+               console.log(error.response.data.errors)
+           });
         }
     }
 }

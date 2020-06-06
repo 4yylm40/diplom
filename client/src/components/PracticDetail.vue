@@ -10,12 +10,16 @@
                 </form> 
                 <div v-else>Авторизуйтесь для отправки задания!</div>
         </div>
+        <h2 v-if="admin">Сдали</h2>
+        <ul v-if="admin">
+            <li v-for="answer of practic.answers" :key="answer.id">{{answer.user.name}} - <a>{{answer.file}}</a></li>
+        </ul>
     </div>
 </template>
 
 <script>
 import {mapGetters} from 'vuex'
-import {getOnePractic, uploadDocumentInformation} from '../services/apiService'
+import {getAuthUser, getOnePractic, uploadDocumentInformation} from '../services/apiService'
 
 import axios from "axios";
 axios.defaults.baseURL = 'http://localhost:3000';
@@ -25,7 +29,8 @@ export default {
     data() {
         return {
             practic: {},
-            file: ''
+            file: '',
+            admin: false
         }
     },
     computed: {
@@ -59,6 +64,16 @@ export default {
             } catch(error) {
                 console.log(error)
             }
+        },
+
+        getUser() {
+           getAuthUser().then((user) => {
+               if(user.data.role == "admin") {
+                   this.admin = true
+               }
+           }).catch((error) => {
+               console.log(error.response.data.errors)
+           });
         }
     }
 }

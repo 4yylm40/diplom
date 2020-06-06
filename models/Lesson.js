@@ -10,8 +10,7 @@ const LessonSchema = new mongoose.Schema({
         required: true
     },
     theory: {
-        type: String,
-        required: true
+        type: String
     },
     question: {
         text: {
@@ -25,6 +24,10 @@ const LessonSchema = new mongoose.Schema({
                 right: {
                     type: Boolean,
                     default: false
+                },
+                user_answer: {
+                    type: Boolean,
+                    default: false
                 }
             }
         ]
@@ -35,9 +38,8 @@ const LessonSchema = new mongoose.Schema({
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'user'
             },
-            try: {
-                type: Number,
-                default: 1
+            trying: {
+                type: Number 
             },
             score: {
                 type: Number,

@@ -85,8 +85,8 @@ router.get("/",async (req, res) => {
 
 router.get("/:id", async (req, res) => {
     try {
-        const practic = await Practic.findById(req.params.id);
-
+        //const profile = await Profile.findOne({user: req.params.user_id}).populate("user", ["name"]);
+        const practic = await (await Practic.findById(req.params.id).populate('answers.user', 'name'));
         if(!practic) {
             return res.status(404).json({msg: "Thing not found"});
         }

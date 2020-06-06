@@ -3,8 +3,8 @@
     {{user.name}}
     {{user.email}}
     {{user.score}}
-        <h2>Теория</h2>
-            <form @submit.prevent="addLesson">
+        <h2 v-if="admin">Теория</h2>
+            <form v-if="admin" @submit.prevent="addLesson">
                 <div class="form-group">
                     <label for="title">Название</label>
                     <input v-model="title" type="text" class="form-control" id="title" placeholder="Название"/>
@@ -14,8 +14,8 @@
                     <input v-model="video" type="text" class="form-control" id="video" placeholder="Видео"/>
                 </div>
                 <div class="form-group">
-                    <label for="theory">Password</label>
-                    <input v-model="theory" type="textarea" class="form-control" id="theory" placeholder="Теория"/>
+                    <label for="theory">Теория</label>
+                    <textarea v-model="theory" class="form-control" id="theory" rows="10" placeholder="Теория"></textarea>
                 </div>
                 <hr>
                 <h3>Вопрос</h3>
@@ -34,8 +34,8 @@
                 </ul>
                 <button type="submit" class="btn btn-primary">Добавить урок</button>
             </form>
-        <h2>Практика</h2>
-        <form @submit.prevent="addPractic">
+        <h2 v-if="admin">Практика</h2>
+        <form v-if="admin" @submit.prevent="addPractic">
             <label for="practicTitle">Название</label>
             <input v-model="practicTitle" class="form-control" id="practicTitle"/>
             <label for="practicQuestion">Задание</label>
@@ -55,6 +55,7 @@ export default {
         return {
             user: {},
             msg: '',
+            admin: false,
 
             title: '',
             video: '',
@@ -67,19 +68,33 @@ export default {
             answers: [],
 
             practicTitle: '',
-            practicQuestion: ''
+            practicQuestion: '',
+
+            lessons: []
         }
     },
     computed: {
         ...mapGetters(['getErrors'])
     },
     mounted() {
-        this.getUser();
+        this.getUser()
+
+        /*getLessons().then((lessons) => {
+            lessons.data.map((lesson) => {
+                //console.log(this.user._id);
+                console.log(lesson.testing).find({user: this.user._id})
+            })
+        }).catch((error) => {
+            this.msg = error
+        });*/
     },
     methods: {
         getUser() {
            getAuthUser().then((user) => {
                this.user = user.data
+               if(user.data.role == "admin") {
+                   this.admin = true
+               }
            }).catch((error) => {
                console.log(error.response.data.errors)
            });

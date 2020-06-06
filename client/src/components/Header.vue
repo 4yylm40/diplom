@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <router-link class="navbar-brand" to="/">Демоэкзамен</router-link>
+            <router-link class="navbar-brand" to="/">Главная</router-link>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -10,6 +10,7 @@
                 <div class="navbar-nav">
                     <router-link class="nav-item nav-link active" to="/theory">Теория</router-link>
                     <router-link class="nav-item nav-link active" to="/practic">Практика</router-link>
+                    <router-link class="nav-item nav-link active" to="/demo">Демоэкзамен</router-link>
 
                     <li v-if="getToken" class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -19,9 +20,9 @@
                             <form id="profile" action="profile.php" method="post">
                                 <router-link to="/profile" class="btn btn-dark">Профиль</router-link>
                             </form>
-                            <form id="logout" action="logout.php" method="post">
+                            <!--<form id="logout" action="logout.php" method="post">
                                 <button type="submit" class="btn btn-dark">Log out</button>
-                            </form>
+                            </form>-->
                         </div>
                     </li>
 
