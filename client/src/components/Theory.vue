@@ -1,6 +1,7 @@
 <template>
     <div>
-        <div class="tabl">
+        <Header/>
+        <!--<div class="tabl">
         <h2>Таблица лидеров</h2>
         <table class="table table-sm table-dark table-hover">
             <thead>
@@ -18,18 +19,20 @@
             </tr>
             </tbody>
         </table>
-        </div>
+        </div>-->
       <LessonsList/>  
     </div>   
 </template>
 
 <script>
+import Header from './Header'
 import LessonsList from "../components/LessonsList"
 import { getProfiles } from "../services/apiService";
 
 export default {
     name: "Theory",
     components: {
+        Header,
         LessonsList
     },
     data() {

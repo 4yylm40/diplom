@@ -37,6 +37,29 @@ router.post("/", [
     }
 });
 
+//@route    GET api/lesson/user_answers
+//@desc     Get all user lesson answers
+//@access   Private
+
+router.get('/user_answers', auth, async (req, res) => {
+    try {
+        let lesson = await Lesson.find();
+        let answers = []
+
+        lesson.map((cur_lesson) => {
+            cur_lesson.testing.map((test) => {
+                if(test.user.toString() === req.user.id) {
+                    answers.push({lesson: cur_lesson.title, trying: test.trying, score: test.score, isFinished: test.isFinished})
+                }
+            })
+        })
+        res.json(answers);
+
+    } catch(error) {
+        res.status(500).send("Server error");
+    }
+})
+
 //@route    GET api/lesson
 //@desc     Get all lessons
 //@access   Public
@@ -46,7 +69,6 @@ router.get("/",async (req, res) => {
         const lessons = await Lesson.find();
         res.json(lessons);
     } catch (error) {
-        console.error(error.message);
         res.status(500).send("Server error");
     }
 });
@@ -81,40 +103,87 @@ router.put('/:id', auth, async (req, res) => {
     try {
         const lesson = await Lesson.findById(req.params.id);
         const user = await User.findById(req.user.id).select("-password");
+        let isExist = false;
 
-        if(lesson.testing.filter((user) => user.user.toString() === req.user.id).lenght === 0) {
-            lesson.testing.unshift({user: req.user.id, trying: 1, score: req.body.score});
-            user.score += req.body.score;
-
-            await lesson.save();
-            await user.save();
-
-            res.json(lesson.testing);
-        }
-
-        if(lesson.testing.filter((user) => user.user.toString() === req.user.id).lenght > 0) {
+        lesson.testing.map((user) => {
+            if(user.user.toString() === req.user.id) {
+                isExist = true;
+            }
+        })
+        
+        if(isExist) {
             const removeIndex = lesson.testing.map((user) => user.user.toString()).indexOf(req.user.id);
+            const trying = lesson.testing[removeIndex].trying;
+            let score = 0;
             lesson.testing.splice(removeIndex, 1);
-    
-            lesson.testing.unshift({user: req.user.id, trying: req.body.trying, score: req.body.score});
-            user.score = req.body.score;
-    
-            await lesson.save();
-            await user.save();
-    
-            res.json(lesson.testing);
+            
+            if(trying + 1 == 1 && req.body.isFinished) {
+                score = 1;
+            } else if (trying + 1 > 1 && trying + 1 < 5 && req.body.isFinished) {
+                score = 1 - trying * 0.2;
+            } else if (trying + 1 >= 5 && req.body.isFinished){
+                score = 0
+            }
+        
+            lesson.testing.unshift({user: req.user.id, trying: trying + 1, score: score, isFinished: req.body.isFinished});
+            user.score += score;
+        } else {
+            let score = 0;
+            (req.body.isFinished) ? score = 1 : score = 0
+            lesson.testing.unshift({user: req.user.id, trying: 1, score: score, isFinished: req.body.isFinished});
+            user.score += score;
         }
-
-        lesson.testing.unshift({user: req.user.id, trying: req.body.trying, score: req.body.score});
-        user.score = req.body.score;
+        res.json(lesson);
 
         await lesson.save();
         await user.save();
-
-        res.json(lesson.testing);
-
     } catch(error) {
         console.error(error.message);
+        res.status(500).send("Server error");
+    }
+});
+
+//@route    POST api/lesson/update/:id
+//@desc     Update lesson
+//@access   Private
+
+router.post('/update/:id', async (req, res) => {
+    try {
+        let lesson = await Lesson.findOneAndUpdate(
+            {_id: req.params.id},
+            {$set: {title: req.body.title, video: req.body.video, theory: req.body.theory, question: req.body.question}},
+            {new: true}
+        );
+
+        return res.json(lesson);
+
+    } catch(error) {
+        if(error.kind === "ObjectID") {
+            return res.status(404).json({msg: "Урок не найден"});
+        }
+        res.status(500).send("Server error");
+    }
+});
+
+//@route    DELETE api/lesson/:id
+//@desc     Delete the lesson
+//@access   Private
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const lesson = await Lesson.findById(req.params.id);
+
+        if(!lesson) {
+            return res.status(404).json({msg: 'Урок не найден'});
+        }
+
+        await lesson.remove();
+        res.json({msg: 'Урок удален'});
+
+    } catch (error) {
+        if(error.kind === "ObjectID") {
+            return res.status(404).json({msg: "Урок не найден"});
+        }
         res.status(500).send("Server error");
     }
 });

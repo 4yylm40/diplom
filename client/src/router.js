@@ -22,6 +22,10 @@ export default new Router({
             component: Registration
         },
         {
+            path: '/auth',
+            component: () => import('./components/Auth')
+        },
+        {
             path: '/practic',
             component: () => import('./components/Practic')
         },
@@ -41,13 +45,13 @@ export default new Router({
         },
         {
             name: 'demo',
-            path: '/demo',
-            component: () => import('./components/Demo')
+            path: '/demo/:demo_id',
+            component: () => import('./components/DemoDetail')
         },
         {
             name: 'demo',
-            path: '/demo/:demo_id',
-            component: () => import('./components/DemoDetail')
+            path: '/demo',
+            component: () => import('./components/Demo')
         }
     ]
 });

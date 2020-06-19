@@ -44,6 +44,10 @@ const LessonSchema = new mongoose.Schema({
             score: {
                 type: Number,
                 default: 0
+            },
+            isFinished: {
+                type: Boolean,
+                default: false
             }
         }
     ],

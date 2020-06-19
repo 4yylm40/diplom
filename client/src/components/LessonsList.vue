@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             {{msg}}
-            <div class="col-xl-6">
+            <div class="list">
                 <Lesson
                     v-for="lesson of lessons" :key="lesson.id"
                     v-bind:lesson="lesson"

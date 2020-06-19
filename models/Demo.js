@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const PracticSchema = new mongoose.Schema({
+const DemoSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true
@@ -25,4 +25,4 @@ const PracticSchema = new mongoose.Schema({
     ]
 });
 
-module.exports = Practic = mongoose.model("practic", PracticSchema);
+module.exports = Demo = mongoose.model("demo", DemoSchema);

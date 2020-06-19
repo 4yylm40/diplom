@@ -13,7 +13,7 @@ const storageConfig = multer.diskStorage({
         cb(null, "uploads");
     },
     filename: (req, file, cb) =>{
-        cb(null, Date.now() + '-' + file.originalname);
+        cb(null, file.originalname);
     }
 });
 
@@ -32,6 +32,8 @@ app.use("/api/auth", require("./routes/api/auth"));
 app.use("/api/lesson", require("./routes/api/lesson"));
 app.use("/api/practic", require("./routes/api/practic"));
 app.use("/api/profile", require("./routes/api/profile"));
+app.use("/api/demo", require("./routes/api/demo"));
+
 
 if(process.env.NODE_ENV === 'production') {
     app.use(express.static('client/dist'));
@@ -40,5 +42,6 @@ if(process.env.NODE_ENV === 'production') {
         res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'))
     });
 }
+
 
 app.listen(PORT);

@@ -29,10 +29,16 @@ export default {
         },
         getErrors(state, error)
         {
-            state.error = error;
+            state.error = error.response.data.errors;
         },
         getCurrentPost(state, slug) {
             state.currentPost = slug;
+        },
+        logOut(state) {
+            state.token = ''
+        },
+        updateError(state) {
+            state.error = ''
         }
     },
     state: {
